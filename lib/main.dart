@@ -33,6 +33,8 @@ class _BodyState extends State<_Body> {
 
   String authenticateResult = '';
 
+  List<BiometricType> availableBiometrics = [];
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -85,9 +87,32 @@ class _BodyState extends State<_Body> {
                           ));
                 }
               },
-              child: Text('Autenticar'),
+              child: Text('Authenticate'),
             ),
             Text(authenticateResult),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  availableBiometrics =
+                      await _localAuth.getAvailableBiometrics();
+                  setState(() {});
+                } catch (e) {
+                  showDialog(
+                      context: context,
+                      builder: (_) => Center(
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(e.toString()),
+                              ),
+                            ),
+                          ));
+                }
+              },
+              child: Text('Available biometrics'),
+            ),
+            ...availableBiometrics
+                .map((biometricType) => Text(biometricType.toString())),
           ],
         ),
       ),
